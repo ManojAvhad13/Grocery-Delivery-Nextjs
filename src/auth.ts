@@ -13,7 +13,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 password: { label: "Password", type: "password" },
             },
 
-            async authorize(credentials, request) {
+            async authorize(credentials) {
 
                 await connectDb()
                 const email = credentials.email
@@ -33,12 +33,47 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     id: user._id,
                     email: user.email,
                     name: user.name,
-                    // role: user.role,
+                    role: user.role,
 
                 }
             },
         })
     ],
+
+    callbacks: {
+        jwt({ token, user }) {
+            if (user) {
+                token.id = user.id.toString(),
+                    token.name = user.name,
+                    token.email = user.email,
+                    token.id = user.id,
+                    token.role = user.role
+            }
+            return token
+        },
+
+        session({ session, token }) {
+            if (session.user) {
+                session.user.id = token.id as string;
+                session.user.name = token.name as string;
+                session.user.email = token.email as string;
+                session.user.role = token.role as string;
+            }
+
+            return session
+        },
+    },
+
+    pages: {
+        signIn: "/login",
+        error: "/login",
+    },
+
+    session: {
+        strategy: "jwt",
+        maxAge: 10 * 24 * 60 * 1000
+    },
+    secret: process.env.AUTH_SECRET
 })
 
 
