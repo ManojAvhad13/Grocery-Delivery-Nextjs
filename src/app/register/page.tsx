@@ -1,9 +1,11 @@
+import Welcome from '@/components/Welcome'
 import React from 'react'
 
 const Register = () => {
     return (
         <div>
-            Register Page
+            <Welcome />
+
         </div>
     )
 }
