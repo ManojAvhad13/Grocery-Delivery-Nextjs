@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowLeft, Eye, EyeIcon, EyeOff, Key, Leaf, LockKeyhole, LogIn, Mail, User } from "lucide-react"
+import { ArrowLeft, Eye, EyeIcon, EyeOff, Key, Leaf, Loader2, LockKeyhole, LogIn, Mail, User } from "lucide-react"
 import { motion } from "motion/react"
 import { useState } from "react"
 import Image from "next/image"
@@ -17,17 +17,21 @@ const RegisterForm = ({ previousStep }: propType) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault()
+        setLoading(true)
         try {
             const result = await axios.post("/api/auth/register", {
                 name, email, password
             })
 
             console.log(result.data)
+            setLoading(false)
         } catch (error) {
             console.log(error)
+            setLoading(false)
         }
     }
 
@@ -97,11 +101,13 @@ const RegisterForm = ({ previousStep }: propType) => {
                 {
                     (() => {
                         const formValidation = name !== "" && email !== "" && password !== ""
-                        return <button disabled={!formValidation} className={`w-full font-semibold py-3 rounded-xl transition-all duration-200 
+                        return <button disabled={!formValidation || loading} className={`w-full font-semibold py-3 rounded-xl transition-all duration-200 
                             shadow-md inline-flex items-center justify-center gap-2 
                             ${formValidation ? "bg-green-600 hover:bg-green-700 text-white"
                                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                            }`}>Register</button>
+                            }`}>
+                            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Register"}
+                        </button>
                     })()
                 }
 
