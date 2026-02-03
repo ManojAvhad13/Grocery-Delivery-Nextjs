@@ -4,6 +4,7 @@ import { auth } from '@/auth';
 import User from '@/models/user.model';
 import { redirect } from "next/navigation";
 import EditRoleMobile from "@/components/EditRoleMobile";
+import Nav from "@/components/Nav";
 
 const Home = async () => {
 
@@ -21,11 +22,13 @@ const Home = async () => {
     return <EditRoleMobile />
   }
 
+  const plainUser = JSON.parse(JSON.stringify(user))
+
   return (
 
-    <div>
-      <h1 className="text-3xl font-bold underline">Home</h1>
-    </div>
+    <>
+      <Nav user={plainUser} />
+    </>
   )
 }
 
