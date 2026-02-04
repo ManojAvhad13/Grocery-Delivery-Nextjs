@@ -5,6 +5,9 @@ import User from '@/models/user.model';
 import { redirect } from "next/navigation";
 import EditRoleMobile from "@/components/EditRoleMobile";
 import Nav from "@/components/Nav";
+import UserDashboard from "@/components/UserDashboard";
+import AdminDashboard from "@/components/AdminDashboard";
+import DeliveryBoy from "@/components/DeliveryBoy";
 
 const Home = async () => {
 
@@ -28,6 +31,14 @@ const Home = async () => {
 
     <>
       <Nav user={plainUser} />
+
+      {user.role == "user" ? (
+        <UserDashboard />
+      ) : user.role == "admin" ? (
+        <AdminDashboard />
+      ) : (
+        <DeliveryBoy />
+      )}
     </>
   )
 }
