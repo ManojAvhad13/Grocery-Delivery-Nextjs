@@ -27,6 +27,7 @@ const Login = () => {
         try {
             await signIn("credentials", {
                 email, password,
+                callbackUrl: "/"  // after click login button then redirect to home page
             })
 
             router.push("/")
@@ -71,7 +72,7 @@ const Login = () => {
 
                 <div className="relative">
                     <Mail className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
-                    <input type="email" placeholder="Enter Your Email..." className="w-full border border-gray-300 rounded-xl py-3 pl-10 pr-4 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                    <input type="email" placeholder="Enter Your Email..." autoComplete="current-email" className="w-full border border-gray-300 rounded-xl py-3 pl-10 pr-4 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
                         onChange={(e) => setEmail(e.target.value)}
                         value={email}
                     />
@@ -79,7 +80,7 @@ const Login = () => {
 
                 <div className="relative">
                     <LockKeyhole className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
-                    <input type={showPassword ? "text" : "password"} placeholder="Enter Your Password..." className="w-full border border-gray-300 rounded-xl py-3 pl-10 pr-4 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                    <input type={showPassword ? "text" : "password"} placeholder="Enter Your Password..." autoComplete="current-password" className="w-full border border-gray-300 rounded-xl py-3 pl-10 pr-4 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
                         onChange={(e) => setPassword(e.target.value)}
                         value={password}
                     />
