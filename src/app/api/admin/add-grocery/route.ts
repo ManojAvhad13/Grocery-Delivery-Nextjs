@@ -1,17 +1,19 @@
+export const runtime = "nodejs";
+
 import { auth } from "@/auth";
 import uploadOnCloudinary from "@/lib/cloudinary";
 import connectDb from "@/lib/db";
 import Grocery from "@/models/grocery.model";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function name(req: NextRequest) {
+export async function POST(req: NextRequest) {
     try {
         await connectDb()
         const session = await auth()
         if (session?.user?.role !== "admin") {
             return NextResponse.json(
-                { message: "you are not admin" },
-                { status: 400 }
+                { message: "Unauthorized: Admin access required" },
+                { status: 403 }
             )
         }
 
@@ -20,26 +22,57 @@ export async function name(req: NextRequest) {
         const category = formData.get("category") as string
         const unit = formData.get("unit") as string
         const price = formData.get("price") as string
-        const file = formData.get("image") as Blob | null
+        const file = formData.get("image") as File | null
 
-        let imageUrl
+        // Validate required fields
+        // if (!name?.trim() || !category?.trim() || !unit?.trim() || !price?.trim()) {
+        //     return NextResponse.json(
+        //         { message: "All fields (name, category, unit, price) are required" },
+        //         { status: 400 }
+        //     )
+        // }
 
-        if (file) {
-            imageUrl = await uploadOnCloudinary(file)
+        if (!name || !category || !unit || !price) {
+            return NextResponse.json(
+                { message: "All fields (name, category, unit, price) are required" },
+                { status: 400 }
+            );
         }
+
+        // ✅ Enforce image (schema requires it)
+        if (!file) {
+            return NextResponse.json(
+                { message: "Image is required" },
+                { status: 400 }
+            );
+        }
+
+        // let imageUrl
+
+        // if (file) {
+        //     const arrayBuffer = await file.arrayBuffer();
+        //     const buffer = Buffer.from(arrayBuffer);
+        //      const imageUrl = await uploadOnCloudinary(buffer);
+        // }
+
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const imageUrl = await uploadOnCloudinary(buffer);
+
         const grocery = await Grocery.create({
-            name, price, category, unit, image: imageUrl
-        })
+            name, category, unit, price, image: imageUrl,
+        });
 
         return NextResponse.json(
             grocery,
             { status: 200 }
         )
 
-    } catch (error) {
+    } catch (error: any) {
+        console.error("ADD GROCERY ERROR:", error);
         return NextResponse.json(
-            { message: `add grocery error ${error}` },
+            { message: error?.message || "Internal Server Error" },
             { status: 500 }
-        )
+        );
     }
 }
