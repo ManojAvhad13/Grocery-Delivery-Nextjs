@@ -10,7 +10,7 @@ const HeroSection = () => {
             id: 1,
             icon: <Leaf className='w-20 h-20 sm:w-28 sm:h-28 text-green-400 drop-shadow-lg' />,
             title: "Fresh Organic Groceries 🥦",
-            subtitle: "Farm-fresh fruits, vegitables, and daily essentials delivered to you.",
+            subtitle: "Farm-fresh fruits, vegetables, and daily essentials delivered to you.",
             btnText: "Shop Now",
             bg: "https://plus.unsplash.com/premium_photo-1663012860167-220d9d9c8aca?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
         },
