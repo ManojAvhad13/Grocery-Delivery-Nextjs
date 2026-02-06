@@ -1,39 +1,44 @@
-import { rejects } from 'assert';
-import { v2 as cloudinary } from 'cloudinary'
+import { v2 as cloudinary } from "cloudinary";
+
+// ✅ Fail fast if env vars are missing
+if (
+    !process.env.CLOUDINARY_CLOUD_NAME ||
+    !process.env.CLOUDINARY_API_KEY ||
+    !process.env.CLOUDINARY_API_SECRET
+) {
+    throw new Error("Cloudinary environment variables are not set");
+}
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true,
 });
 
-const uploadOnCloudinary = async (file: Blob): Promise<string | null> => {
-    if (!file) {
-        return null
-    }
-
-    try {
-        const arrayBuffer = await file.arrayBuffer()
-        const buffer = Buffer.from(arrayBuffer)
-        return new Promise((resolve, reject) => {
-            const uploadStream = cloudinary.uploader.upload_stream(
-                { resource_type: "auto" },
-                (error, result) => {
-                    if (error) {
-                        reject(error)
-                    } else {
-                        resolve(result?.secure_url ?? null)
-                    }
+const uploadOnCloudinary = (buffer: Buffer): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+            {
+                folder: "groceries",
+                resource_type: "auto",
+            },
+            (error, result) => {
+                if (error) {
+                    console.error("Cloudinary Error:", error);
+                    return reject(error);
                 }
-            )
 
-            uploadStream.end(buffer)
-        })
+                if (!result?.secure_url) {
+                    return reject(new Error("Cloudinary upload failed"));
+                }
 
-    } catch (error) {
-        console.log(error)
-        return null
-    }
-}
+                resolve(result.secure_url);
+            }
+        );
 
-export default uploadOnCloudinary
+        stream.end(buffer);
+    });
+};
+
+export default uploadOnCloudinary;
