@@ -69,7 +69,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
 
         // user login email password callback
-        jwt({ token, user }) {
+        jwt({ token, user, trigger, session }) {
             if (user) {
                 token.id = user.id.toString(),
                     token.name = user.name,
@@ -77,6 +77,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     token.id = user.id,
                     token.role = user.role
             }
+
+            if (trigger == "update") {
+                token.role = session.role
+            }
+
             return token
         },
 
