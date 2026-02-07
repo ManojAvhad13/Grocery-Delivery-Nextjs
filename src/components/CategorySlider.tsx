@@ -40,8 +40,22 @@ const CategorySlider = () => {
 
         setShowLeft(scrollLeft > 0)
         setShowRight(scrollLeft + clientWidth <= scrollWidth - 5)
-
     }
+
+    // auto scroll
+    useEffect(() => {
+        const autoScroll = setInterval(() => {
+            if (!scrollRef.current) return
+            const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current
+            if (scrollLeft + clientWidth >= scrollWidth - 5) {
+                scrollRef.current.scrollTo({ left: 0, behavior: "smooth" })
+            }
+            else {
+                scrollRef.current.scrollBy({ left: 300, behavior: "smooth" })
+            }
+        }, 3000)
+        return () => clearInterval(autoScroll)
+    }, [])
 
     useEffect(() => {
         scrollRef.current?.addEventListener("scroll", checkScroll)
