@@ -1,5 +1,6 @@
 'use client'
 
+import CategorySlider from './CategorySlider'
 import HeroSection from './HeroSection'
 
 const UserDashboard = () => {
@@ -7,6 +8,7 @@ const UserDashboard = () => {
     return (
         <>
             <HeroSection />
+            <CategorySlider />
         </>
     )
 }
