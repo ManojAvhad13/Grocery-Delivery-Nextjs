@@ -109,6 +109,11 @@ const CartPage = () => {
                             </div>
                         </div>
 
+                        <motion.button whileTap={{ scale: 0.98 }} className='w-full mt-6 bg-green-600 text-white py-3 rounded-full
+                        hover:bg-green-700 transition-all font-semibold text-sm sm:text-base'>
+                            Proceed to Checkout
+                        </motion.button>
+
                     </motion.div>
 
                 </div>
