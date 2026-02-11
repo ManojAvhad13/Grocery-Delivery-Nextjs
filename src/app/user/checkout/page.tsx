@@ -1,12 +1,20 @@
 'use client'
 
-import MapView from '@/components/MapView'
 import { RootState } from '@/redux/store'
 import { ArrowLeft, Building, Home, LocateFixed, MapPin, Navigation, Phone, User } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 import { useSelector } from 'react-redux'
+import L, { LatLngExpression } from 'leaflet'
+import "leaflet/dist/leaflet.css"
+
+const markerIcon = new L.Icon({
+    iconUrl: "https://cdn-icons-png.flaticon.com/128/14831/14831599.png",
+    iconSize: [40, 40],
+    iconAnchor: [20, 40]
+})
 
 const CheckoutPage = () => {
 
@@ -132,7 +140,16 @@ const CheckoutPage = () => {
                         </div>
 
                         <div className='relative mt-6 h-[330px] rounded-xl overflow-hidden border border-gray-200 shadow-inner'>
-                            <MapView position={position} />
+                            {position && <MapContainer center={position as LatLngExpression} zoom={13} scrollWheelZoom={true} className='w-full h-full'>
+                                <TileLayer
+                                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                />
+
+                                <Marker icon={markerIcon} position={position} />
+
+                            </MapContainer>}
+
                         </div>
 
                     </div>
