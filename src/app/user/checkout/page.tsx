@@ -242,7 +242,7 @@ const CheckoutPage = () => {
                     <h2 className='text-xl font-semibold text-gray-800 mb-4 flex 
                     items-center gap-2'><CreditCard className='text-green-600' /> Payment Method</h2>
                     <div className='space-y-4 mb-6'>
-                        <button className={`flex items-center gap-3 w-full border rounded-lg p-3 transition-all
+                        <button onClick={() => setPaymentMethod("online")} className={`flex items-center gap-3 w-full border rounded-lg p-3 transition-all
                             ${paymentMethod === "online"
                                 ? "border-gray-600 bg-green-50 shadow-sm"
                                 : "hover:bg-gray-50"
@@ -250,12 +250,12 @@ const CheckoutPage = () => {
                             <CreditCardIcon className='text-green-600' /> <span className='font-medium text-gray-700'>Pay Online (Stripe)</span>
                         </button>
 
-                        <button className={`flex items-center gap-3 w-full border rounded-lg p-3 transition-all
+                        <button onClick={() => setPaymentMethod("cod")} className={`flex items-center gap-3 w-full border rounded-lg p-3 transition-all
                             ${paymentMethod === "cod"
                                 ? "border-gray-600 bg-green-50 shadow-sm"
                                 : "hover:bg-gray-50"
                             }`}>
-                            <Banknote className='text-green-600' /> <span className='font-medium text-gray-700'>Pay Cash on Delivery (Stripe)</span>
+                            <Banknote className='text-green-600' /> <span className='font-medium text-gray-700'>Cash on Delivery</span>
                         </button>
                     </div>
                 </motion.div>
