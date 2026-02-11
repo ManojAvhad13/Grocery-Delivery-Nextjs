@@ -1,7 +1,7 @@
 'use client'
 
 import { RootState } from '@/redux/store'
-import { ArrowLeft, Building, Home, LocateFixed, LocateFixedIcon, MapPin, Navigation, Phone, User } from 'lucide-react'
+import { ArrowLeft, Building, Home, Loader2, LocateFixed, LocateFixedIcon, MapPin, Navigation, Phone, User } from 'lucide-react'
 import { motion, scale } from 'motion/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -31,6 +31,8 @@ const CheckoutPage = () => {
         pincode: "",
         fullAdress: ""
     })
+
+    const [searchLoading, setSearchLoading] = useState(false)
 
     const [searchQuery, setSearchQuery] = useState("")
 
@@ -75,10 +77,12 @@ const CheckoutPage = () => {
     }
 
     const handleSearchQuery = async () => {
+        setSearchLoading(true)
         const provider = new OpenStreetMapProvider()
         const results = await provider.search({ query: searchQuery });
         // console.log(results)
         if (results) {
+            setSearchLoading(false)
             setPosition([results[0].y, results[0].x])
         }
     }
@@ -102,6 +106,15 @@ const CheckoutPage = () => {
         }
         fetchAddress()
     }, [position])
+
+    const handleCurrentLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const { latitude, longitude } = pos.coords
+                setPosition([latitude, longitude])
+            }, (err) => { console.log('location error', err) }, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 })
+        }
+    }
 
     return (
         <div className='w-[92%] md:w-[80%] mx-auto py-10 relative'>
@@ -189,7 +202,7 @@ const CheckoutPage = () => {
                             <input type="text" placeholder='seacrh city or area location...'
                                 className='flex-1 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-gray-500 outline-none' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                             <button className='bg-green-600 text-white px-5 rounded-lg hover:bg-gray-700 
-                            transition-all font-medium' onClick={handleSearchQuery}>Search</button>
+                            transition-all font-medium' onClick={handleSearchQuery}>{searchLoading ? <Loader2 size={16} className='animate-spin' /> : "Search"}</button>
                         </div>
 
                         <div className='relative mt-6 h-[330px] rounded-xl overflow-hidden border border-gray-200 shadow-inner'>
@@ -204,9 +217,10 @@ const CheckoutPage = () => {
                             </MapContainer>}
 
                             <motion.button
-                                whileTap={{ scale: 0.98 }}
+                                whileTap={{ scale: 0.97 }}
                                 className='absolute bottom-4 right-4 bg-green-600 text-white shadow-lg rounded-lg p-3 hover:bg-green-700
-                            transition-all flex items-center justify-center z-999'
+                            transition-all flex items-center justify-center z-[999]'
+                                onClick={handleCurrentLocation}
                             >
                                 <LocateFixedIcon size={22} />
                             </motion.button>
