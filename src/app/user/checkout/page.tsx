@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux'
 import L, { LatLngExpression } from 'leaflet'
 import "leaflet/dist/leaflet.css"
 import axios from 'axios'
+import { OpenStreetMapProvider } from 'leaflet-geosearch'
 
 const markerIcon = new L.Icon({
     iconUrl: "https://cdn-icons-png.flaticon.com/128/14831/14831599.png",
@@ -30,6 +31,8 @@ const CheckoutPage = () => {
         pincode: "",
         fullAdress: ""
     })
+
+    const [searchQuery, setSearchQuery] = useState("")
 
     const [position, setPosition] = useState<[number, number] | null>(null)
 
@@ -69,6 +72,15 @@ const CheckoutPage = () => {
                 }
             }}
         />
+    }
+
+    const handleSearchQuery = async () => {
+        const provider = new OpenStreetMapProvider()
+        const results = await provider.search({ query: searchQuery });
+        // console.log(results)
+        if (results) {
+            setPosition([results[0].y, results[0].x])
+        }
     }
 
     useEffect(() => {
@@ -175,9 +187,9 @@ const CheckoutPage = () => {
                         </div>
                         <div className='flex gap-2 mt-3'>
                             <input type="text" placeholder='seacrh city or area location...'
-                                className='flex-1 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-gray-500 outline-none' />
+                                className='flex-1 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-gray-500 outline-none' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                             <button className='bg-green-600 text-white px-5 rounded-lg hover:bg-gray-700 
-                            transition-all font-medium'>Search</button>
+                            transition-all font-medium' onClick={handleSearchQuery}>Search</button>
                         </div>
 
                         <div className='relative mt-6 h-[330px] rounded-xl overflow-hidden border border-gray-200 shadow-inner'>
