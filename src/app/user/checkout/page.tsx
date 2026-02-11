@@ -23,6 +23,8 @@ const CheckoutPage = () => {
     const router = useRouter()
 
     const { userData } = useSelector((state: RootState) => state.user)
+    const { subTotal, deliveryFee, finalTotal } = useSelector((state: RootState) => state.cart)
+
     const [address, setAddress] = useState({
         fullName: "",
         mobile: "",
@@ -258,6 +260,29 @@ const CheckoutPage = () => {
                             <Banknote className='text-green-600' /> <span className='font-medium text-gray-700'>Cash on Delivery</span>
                         </button>
                     </div>
+
+                    <div className='border-t pt-4 text-gray-700 space-y-2 text-sm sm:text-base'>
+                        <div className='flex justify-between'>
+                            <span className='font-semibold'>Subtotal</span>
+                            <span className='font-semibold text-green-600'>₹{subTotal}</span>
+                        </div>
+                        <div className='flex justify-between'>
+                            <span className='font-semibold'>Delivery Fee</span>
+                            <span className='font-semibold text-green-600'>₹{deliveryFee}</span>
+                        </div>
+                        <div className='flex justify-between font-bold text-lg border-t pt-3'>
+                            <span className='font-semibold'>Final Total</span>
+                            <span className='font-semibold text-green-600'>₹{finalTotal}</span>
+                        </div>
+                    </div>
+
+                    <motion.button
+                        whileTap={{ scale: 0.98 }}
+                        className='w-full mt-6 bg-green-600 text-white py-3 rounded-full hover:bg-green-700 transition-all font-semibold'
+                    >
+                        {paymentMethod == "cod" ? "Place Order" : "Pay & Place Order"}
+                    </motion.button>
+
                 </motion.div>
 
             </div>
