@@ -1,7 +1,7 @@
 'use client'
 
 import { RootState } from '@/redux/store'
-import { ArrowLeft, Building, CreditCard, CreditCardIcon, Home, Loader2, LocateFixed, LocateFixedIcon, MapPin, Navigation, Phone, User } from 'lucide-react'
+import { ArrowLeft, Banknote, Building, CreditCard, CreditCardIcon, Home, Loader2, LocateFixed, LocateFixedIcon, MapPin, Navigation, Phone, User } from 'lucide-react'
 import { motion, scale } from 'motion/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -248,6 +248,14 @@ const CheckoutPage = () => {
                                 : "hover:bg-gray-50"
                             }`}>
                             <CreditCardIcon className='text-green-600' /> <span className='font-medium text-gray-700'>Pay Online (Stripe)</span>
+                        </button>
+
+                        <button className={`flex items-center gap-3 w-full border rounded-lg p-3 transition-all
+                            ${paymentMethod === "cod"
+                                ? "border-gray-600 bg-green-50 shadow-sm"
+                                : "hover:bg-gray-50"
+                            }`}>
+                            <Banknote className='text-green-600' /> <span className='font-medium text-gray-700'>Pay Cash on Delivery (Stripe)</span>
                         </button>
                     </div>
                 </motion.div>
