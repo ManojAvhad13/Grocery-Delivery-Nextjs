@@ -1,8 +1,8 @@
 'use client'
 
 import { RootState } from '@/redux/store'
-import { ArrowLeft, Building, Home, LocateFixed, MapPin, Navigation, Phone, User } from 'lucide-react'
-import { motion } from 'motion/react'
+import { ArrowLeft, Building, Home, LocateFixed, LocateFixedIcon, MapPin, Navigation, Phone, User } from 'lucide-react'
+import { motion, scale } from 'motion/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet'
@@ -140,7 +140,7 @@ const CheckoutPage = () => {
                             <User className='absolute left-3 top-3 text-green-600' size={18} />
 
                             {/* readOnly property using for not change name */}
-                            <input type="text" value={address.fullName} onChange={(e) => setAddress((prev) => ({ ...prev, fullName: address.fullAdress }))}
+                            <input type="text" value={address.fullName} onChange={(e) => setAddress((prev) => ({ ...prev, fullName: e.target.value }))}
                                 className='pl-10 w-full border rounded-lg p-3 text-sm  bg-gray-50' />
                         </div>
 
@@ -148,7 +148,7 @@ const CheckoutPage = () => {
                             <Phone className='absolute left-3 top-3 text-green-600' size={18} />
 
                             {/* readOnly property using for not change name */}
-                            <input type="text" value={address.mobile} onChange={(e) => setAddress((prev) => ({ ...prev, mobile: address.mobile }))}
+                            <input type="text" value={address.mobile} onChange={(e) => setAddress((prev) => ({ ...prev, mobile: e.target.value }))}
                                 className='pl-10 w-full border rounded-lg p-3 text-sm  bg-gray-50' />
                         </div>
 
@@ -156,7 +156,7 @@ const CheckoutPage = () => {
                             <Home className='absolute left-3 top-3 text-green-600' size={18} />
 
                             {/* readOnly property using for not change name */}
-                            <input type="text" value={address.fullAdress} placeholder='Enter full address...' onChange={(e) => setAddress((prev) => ({ ...prev, fullAdress: address.fullAdress }))}
+                            <input type="text" value={address.fullAdress} placeholder='Enter full address...' onChange={(e) => setAddress((prev) => ({ ...prev, fullAdress: e.target.value }))}
                                 className='pl-10 w-full border rounded-lg p-3 text-sm  bg-gray-50' />
                         </div>
 
@@ -165,7 +165,7 @@ const CheckoutPage = () => {
                                 <Building className='absolute left-3 top-3 text-green-600' size={18} />
 
                                 {/* readOnly property using for not change name */}
-                                <input type="text" value={address.city} placeholder='city' onChange={(e) => setAddress((prev) => ({ ...prev, city: address.city }))}
+                                <input type="text" value={address.city} placeholder='city' onChange={(e) => setAddress((prev) => ({ ...prev, city: e.target.value }))}
                                     className='pl-10 w-full border rounded-lg p-3 text-sm  bg-gray-50' />
                             </div>
 
@@ -173,7 +173,7 @@ const CheckoutPage = () => {
                                 <Navigation className='absolute left-3 top-3 text-green-600' size={18} />
 
                                 {/* readOnly property using for not change name */}
-                                <input type="text" value={address.state} placeholder='state' onChange={(e) => setAddress((prev) => ({ ...prev, state: address.state }))}
+                                <input type="text" value={address.state} placeholder='state' onChange={(e) => setAddress((prev) => ({ ...prev, state: e.target.value }))}
                                     className='pl-10 w-full border rounded-lg p-3 text-sm  bg-gray-50' />
                             </div>
 
@@ -181,7 +181,7 @@ const CheckoutPage = () => {
                                 <LocateFixed className='absolute left-3 top-3 text-green-600' size={18} />
 
                                 {/* readOnly property using for not change name */}
-                                <input type="text" value={address.pincode} placeholder='pin code' onChange={(e) => setAddress((prev) => ({ ...prev, pincode: address.pincode }))}
+                                <input type="text" value={address.pincode} placeholder='pin code' onChange={(e) => setAddress((prev) => ({ ...prev, pincode: e.target.value }))}
                                     className='pl-10 w-full border rounded-lg p-3 text-sm  bg-gray-50' />
                             </div>
                         </div>
@@ -202,6 +202,14 @@ const CheckoutPage = () => {
                                 <DraggableMarker />
 
                             </MapContainer>}
+
+                            <motion.button
+                                whileTap={{ scale: 0.98 }}
+                                className='absolute bottom-4 right-4 bg-green-600 text-white shadow-lg rounded-lg p-3 hover:bg-green-700
+                            transition-all flex items-center justify-center z-999'
+                            >
+                                <LocateFixedIcon size={22} />
+                            </motion.button>
 
                         </div>
 
