@@ -1,7 +1,7 @@
 'use client'
 
 import { RootState } from '@/redux/store'
-import { ArrowLeft, Building, Home, Loader2, LocateFixed, LocateFixedIcon, MapPin, Navigation, Phone, User } from 'lucide-react'
+import { ArrowLeft, Building, CreditCard, CreditCardIcon, Home, Loader2, LocateFixed, LocateFixedIcon, MapPin, Navigation, Phone, User } from 'lucide-react'
 import { motion, scale } from 'motion/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -33,10 +33,10 @@ const CheckoutPage = () => {
     })
 
     const [searchLoading, setSearchLoading] = useState(false)
-
     const [searchQuery, setSearchQuery] = useState("")
-
     const [position, setPosition] = useState<[number, number] | null>(null)
+
+    const [paymentMethod, setPaymentMethod] = useState<"cod" | "online">("cod")
 
     useEffect(() => {
         if (navigator.geolocation) {
@@ -229,6 +229,29 @@ const CheckoutPage = () => {
 
                     </div>
                 </motion.div>
+
+                {/* right div */}
+                <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3 }}
+
+                    className='bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300
+                    p-6 border border-gray-100 h-fit'
+                >
+                    <h2 className='text-xl font-semibold text-gray-800 mb-4 flex 
+                    items-center gap-2'><CreditCard className='text-green-600' /> Payment Method</h2>
+                    <div className='space-y-4 mb-6'>
+                        <button className={`flex items-center gap-3 w-full border rounded-lg p-3 transition-all
+                            ${paymentMethod === "online"
+                                ? "border-gray-600 bg-green-50 shadow-sm"
+                                : "hover:bg-gray-50"
+                            }`}>
+                            <CreditCardIcon className='text-green-600' /> <span className='font-medium text-gray-700'>Pay Online (Stripe)</span>
+                        </button>
+                    </div>
+                </motion.div>
+
             </div>
 
         </div>
