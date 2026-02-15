@@ -165,7 +165,7 @@ border border-green-400/60 shadow-lg">
                                 </div>
                             </div>
 
-                            {user.role == "user" && <Link href={""} className='flex items-center gap-2 px-3 py-2 hover:bg-green-50 rounded-lg text-gray-700 font-medium' onClick={() => setOpen(false)}>
+                            {user.role == "user" && <Link href={"/user/my-orders"} className='flex items-center gap-2 px-3 py-2 hover:bg-green-50 rounded-lg text-gray-700 font-medium' onClick={() => setOpen(false)}>
                                 <Package className='w-5 h-5 text-green-600' />
                                 My Orders
                             </Link>}
