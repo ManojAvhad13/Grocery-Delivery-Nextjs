@@ -12,7 +12,9 @@ interface IOrder {
             image: string,
             quantity: number,
         }
-    ]
+    ],
+
+    isPaid: boolean,
 
     totalAmount: number,
     paymentMethod: "cod" | "online",
@@ -60,6 +62,11 @@ const orderSchema = new mongoose.Schema<IOrder>({
         type: String,
         enum: ["cod", "online"],
         default: "cod"
+    },
+
+    isPaid: {
+        type: Boolean,
+        default: false
     },
 
     totalAmount: Number,
