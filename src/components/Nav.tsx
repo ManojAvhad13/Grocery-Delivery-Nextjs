@@ -130,7 +130,7 @@ border border-green-400/60 shadow-lg">
                     <div className='hidden md:flex items-center gap-4'>
                         <Link href={"/admin/add-grocery"} className='flex items-center gap-2 bg-white text-green-700 font-semibold px-4 py-2 rounded-full hover:bg-green-100 transition-all'><Plus className='w-5 h-5' />Add Grocery</Link>
                         <Link href={""} className='flex items-center gap-2 bg-white text-green-700 font-semibold px-4 py-2 rounded-full hover:bg-green-100 transition-all'><Boxes className='w-5 h-5' />View Grocery</Link>
-                        <Link href={""} className='flex items-center gap-2 bg-white text-green-700 font-semibold px-4 py-2 rounded-full hover:bg-green-100 transition-all'><ClipboardCheck className='w-5 h-5' />Manage Orders</Link>
+                        <Link href={"/admin/manage-orders"} className='flex items-center gap-2 bg-white text-green-700 font-semibold px-4 py-2 rounded-full hover:bg-green-100 transition-all'><ClipboardCheck className='w-5 h-5' />Manage Orders</Link>
                     </div>
 
                     <div className='md:hidden bg-white rounded-full w-10 h-10 flex 
