@@ -2,7 +2,7 @@
 
 import { RootState } from '@/redux/store'
 import { ArrowLeft, Banknote, Building, CreditCard, CreditCardIcon, Home, Loader2, LocateFixed, LocateFixedIcon, MapPin, Navigation, Phone, User } from 'lucide-react'
-import { motion, scale } from 'motion/react'
+import { motion } from 'motion/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet'
@@ -31,7 +31,7 @@ const CheckoutPage = () => {
         city: "",
         state: "",
         pincode: "",
-        fullAdress: ""
+        fullAddress: ""
     })
 
     const [searchLoading, setSearchLoading] = useState(false)
@@ -40,6 +40,7 @@ const CheckoutPage = () => {
 
     const [paymentMethod, setPaymentMethod] = useState<"cod" | "online">("cod")
 
+    // Get current location
     useEffect(() => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((pos) => {
@@ -50,6 +51,7 @@ const CheckoutPage = () => {
     }, [])
 
     // when come user data then run this useEffect Hook
+    // Auto-fill user data
     useEffect(() => {
         if (userData) {
             setAddress((prev) => ({ ...prev, fullName: userData.name || "" }))
@@ -61,8 +63,14 @@ const CheckoutPage = () => {
 
         const map = useMap()
 
+        // useEffect(() => {
+        //     map.setView(position as LatLngExpression, 15, { animate: true })
+        // }, [position, map])
+
         useEffect(() => {
-            map.setView(position as LatLngExpression, 15, { animate: true })
+            if (position) {
+                map.setView(position as LatLngExpression, 15, { animate: true })
+            }
         }, [position, map])
 
         return <Marker icon={markerIcon}
@@ -83,9 +91,11 @@ const CheckoutPage = () => {
         const provider = new OpenStreetMapProvider()
         const results = await provider.search({ query: searchQuery });
         // console.log(results)
-        if (results) {
+        if (results && results.length > 0) {
             setSearchLoading(false)
             setPosition([results[0].y, results[0].x])
+        } else {
+            alert("Location not found")
         }
     }
 
@@ -97,10 +107,13 @@ const CheckoutPage = () => {
                 // console.log(result.data)
                 setAddress(prev => ({
                     ...prev,
-                    city: result.data.address.city,
-                    state: result.data.address.state,
-                    pincode: result.data.address.postcode,
-                    fullAdress: result.data.display_name,
+                    city: result.data.address.city ||
+                        result.data.address.town ||
+                        result.data.address.village ||
+                        "",
+                    state: result.data.address.state || "",
+                    pincode: result.data.address.postcode || "",
+                    fullAddress: result.data.display_name || "",
                 }))
             } catch (error) {
                 console.log(error)
@@ -112,7 +125,10 @@ const CheckoutPage = () => {
     const handleCod = async () => {
 
         if (!position) {
-            return null
+            alert("Please select delivery location")
+            return
+        } else {
+            null
         }
 
         try {
@@ -133,7 +149,7 @@ const CheckoutPage = () => {
                     mobile: address.mobile,
                     city: address.city,
                     state: address.state,
-                    fullAdress: address.fullAdress,
+                    fullAddress: address.fullAddress,
                     pincode: address.pincode,
                     latitude: position[0],
                     longitude: position[1]
@@ -143,6 +159,51 @@ const CheckoutPage = () => {
 
             // console.log(result.data)
             router.push("/user/order-success")
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleOnline = async () => {
+
+        if (!position) {
+            alert("Please select delivery location")
+            return
+        }
+
+        try {
+            // Create a payment session on the server which should return a redirect URL
+            const result = await axios.post('/api/user/payment', {
+                userId: userData?._id,
+                items: cartData.map(item => ({
+                    grocery: item._id,
+                    name: item.name,
+                    price: item.price,
+                    unit: item.unit,
+                    quantity: item.quantity,
+                    image: item.image
+                })),
+                totalAmount: finalTotal,
+                address: {
+                    fullName: address.fullName,
+                    mobile: address.mobile,
+                    city: address.city,
+                    state: address.state,
+                    fullAddress: address.fullAddress,
+                    pincode: address.pincode,
+                    latitude: position[0],
+                    longitude: position[1]
+                },
+                paymentMethod: 'online'
+            })
+
+            // Expect the server to respond with a URL to redirect the user to (eg. Stripe Checkout)
+            if (result.data && result.data.url) {
+                window.location.href = result.data.url
+            } else {
+                console.log('No redirect URL returned from payment session')
+            }
 
         } catch (error) {
             console.log(error)
@@ -211,7 +272,7 @@ const CheckoutPage = () => {
                             <Home className='absolute left-3 top-3 text-green-600' size={18} />
 
                             {/* readOnly property using for not change name */}
-                            <input type="text" value={address.fullAdress} placeholder='Enter full address...' onChange={(e) => setAddress((prev) => ({ ...prev, fullAdress: e.target.value }))}
+                            <input type="text" value={address.fullAddress} placeholder='Enter full address...' onChange={(e) => setAddress((prev) => ({ ...prev, fullAddress: e.target.value }))}
                                 className='pl-10 w-full border rounded-lg p-3 text-sm  bg-gray-50' />
                         </div>
 
@@ -320,14 +381,14 @@ const CheckoutPage = () => {
                         whileTap={{ scale: 0.98 }}
                         className='w-full mt-6 bg-green-600 text-white py-3 rounded-full hover:bg-green-700 transition-all font-semibold'
                         onClick={() => {
-                            if (paymentMethod == "cod") {
+                            if (paymentMethod === "cod") {
                                 handleCod()
-                            } else {
-                                null
+                            } else if (paymentMethod === "online") {
+                                handleOnline()
                             }
                         }}
                     >
-                        {paymentMethod == "cod" ? "Place Order" : "Pay & Place Order"}
+                        {paymentMethod === "cod" ? "Place Order" : "Pay & Place Order"}
                     </motion.button>
 
                 </motion.div>
