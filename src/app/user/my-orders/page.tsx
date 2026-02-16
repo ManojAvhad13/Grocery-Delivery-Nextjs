@@ -5,7 +5,9 @@ import axios from 'axios'
 import { ArrowLeft, Package, PackageSearch } from 'lucide-react'
 import { div } from 'motion/react-client'
 import { useRouter } from 'next/navigation'
+import { motion } from 'motion/react'
 import React, { useEffect, useState } from 'react'
+import UserOrderCard from '@/components/UserOrderCard'
 
 const page = () => {
 
@@ -51,8 +53,17 @@ const page = () => {
                         <h2 className='text-2xl font-bold text-gray-800 mb-2'>No Orders Found</h2>
                         <p className='text-gray-600 text-lg'>Start shopping to view your orders here.</p>
                     </div>
-                ) : <div className=''>
-
+                ) : <div className='mt-4 space-y-6'>
+                    {orders?.map((order, index) => (
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4 }}
+                        >
+                            <UserOrderCard order={order} />
+                        </motion.div>
+                    ))}
                 </div>}
 
             </div>
