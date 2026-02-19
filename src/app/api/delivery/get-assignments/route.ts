@@ -11,7 +11,7 @@ export async function GET() {
         const assignments = await DeliveryAssignment.find({
             brodcastedTo: session?.user?.id,
             status: "brodcasted"
-        })
+        }).populate("order")
 
         return NextResponse.json(
             assignments, { status: 200 }
