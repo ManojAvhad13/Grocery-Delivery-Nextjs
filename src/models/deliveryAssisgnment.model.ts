@@ -40,3 +40,5 @@ const deliveryAssignmentSchema = new mongoose.Schema<IDeliveryAssignment>({
 }, { timestamps: true })
 
 const DeliveryAssignment = mongoose.models.DeliveryAssignment || mongoose.model("DeliveryAssignment", deliveryAssignmentSchema)
+
+export default DeliveryAssignment
