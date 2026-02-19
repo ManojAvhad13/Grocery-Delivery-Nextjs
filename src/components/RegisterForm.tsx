@@ -27,7 +27,7 @@ const RegisterForm = ({ previousStep }: propType) => {
         e.preventDefault()
         setLoading(true)
         try {
-            const result = await axios.post("/api/auth/register", {
+            await axios.post("/api/auth/register", {
                 name, email, password
             })
 
@@ -106,7 +106,7 @@ const RegisterForm = ({ previousStep }: propType) => {
                 {
                     (() => {
                         const formValidation = name !== "" && email !== "" && password !== ""
-                        return <button disabled={!formValidation || loading} className={`w-full font-semibold py-3 rounded-xl transition-all duration-200 
+                        return <button type="submit" disabled={!formValidation || loading} className={`w-full font-semibold py-3 rounded-xl transition-all duration-200 
                             shadow-md inline-flex items-center justify-center gap-2 
                             ${formValidation ? "bg-green-600 hover:bg-green-700 text-white"
                                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
