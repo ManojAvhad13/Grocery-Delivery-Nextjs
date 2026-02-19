@@ -55,7 +55,7 @@ export async function POST(req: NextRequest, { params }: { params: { orderId: st
 
             const deliveryAssisgnment = await DeliveryAssignment.create({
                 order: order._Id,
-                broadcastedTo: candidates,
+                brodcastedTo: candidates,
                 status: "brodcasted"
             })
 
