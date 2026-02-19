@@ -13,7 +13,9 @@ const useGetMe = () => {
     useEffect(() => {
         const getMe = async () => {
             try {
-                const result = await axios.get("/api/me")
+                const result = await axios.get("/api/me", {
+                    withCredentials: true
+                })
                 // console.log(result.data)
                 dispatch(setUserData(result.data))
 
@@ -22,7 +24,8 @@ const useGetMe = () => {
             }
         }
         getMe()
-    }, [])
+
+    }, [dispatch])
 }
 
 export default useGetMe
