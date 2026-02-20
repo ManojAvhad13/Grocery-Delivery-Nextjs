@@ -1,4 +1,5 @@
 import connectDb from "@/lib/db";
+import emitEventHandler from "@/lib/emitEventHandler";
 import DeliveryAssignment from "@/models/deliveryAssignment.model";
 import Order from "@/models/order.model";
 import User from "@/models/user.model";
@@ -47,6 +48,9 @@ export async function POST(req: NextRequest, { params }: { params: { orderId: st
 
             if (candidates.length == 0) {
                 await order.save()
+
+                await emitEventHandler("order-status-update", { orderId: order._id, status: order.status })
+
                 return NextResponse.json(
                     { message: "there is no available delivery boys" },
                     { status: 200 }
@@ -58,6 +62,15 @@ export async function POST(req: NextRequest, { params }: { params: { orderId: st
                 brodcastedTo: candidates,
                 status: "brodcasted"
             })
+
+            await deliveryAssignment.populate("order")
+
+            for (const boyId of candidates) {
+                const boy = await User.findById(boyId)
+                if (boy.socketId) {
+                    await emitEventHandler("new-assignment", deliveryAssignment, boy.socketId)
+                }
+            }
 
             order.assignment = deliveryAssignment._id
             deliveryBoysPayload = availableDeliveryBoys.map(b => ({
@@ -72,6 +85,8 @@ export async function POST(req: NextRequest, { params }: { params: { orderId: st
 
         await order.save()
         await order.populate("user")
+
+        await emitEventHandler("order-status-update", { orderId: order._id, status: order.status })
 
         return NextResponse.json({
             assignment: order.assignment?._id,
