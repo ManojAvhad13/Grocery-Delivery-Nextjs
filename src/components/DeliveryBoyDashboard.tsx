@@ -1,5 +1,6 @@
 'use client'
 
+import { getSocket } from "@/lib/socket"
 import axios from "axios"
 import { useEffect, useState } from "react"
 
@@ -18,6 +19,15 @@ const DeliveryBoyDashboard = () => {
             }
         }
         fetchAssignments()
+    }, [])
+
+    useEffect((): any => {
+        const socket = getSocket()
+
+        socket.on("new-assignment", (deliveryAssignment) => {
+            setAssignments((prev) => [...prev, deliveryAssignment])
+        })
+        return () => socket.off("new-assignment")
     }, [])
 
     return (
