@@ -1,15 +1,18 @@
 'use client'
 
+import { getSocket } from '@/lib/socket'
 import { IOrder } from '@/models/order.model'
 import { Banknote, ChevronDown, ChevronUp, CreditCard, MapPin, Package, Truck } from 'lucide-react'
 import { motion } from 'motion/react'
-import { div } from 'motion/react-m'
+// import { div } from 'motion/react-client'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const UserOrderCard = ({ order }: { order: IOrder }) => {
 
     const [expanded, setExpanded] = useState(false)
+
+    const [status, setStatus] = useState(order.status)
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -26,6 +29,16 @@ const UserOrderCard = ({ order }: { order: IOrder }) => {
                 return "bg-gray-100 text-gray-700 border-gray-300"
         }
     }
+
+    useEffect((): any => {
+        const socket = getSocket()
+        socket.on("order-status-update", (data) => {
+            if (data.orderId.toString() == order._id!.toString()) {
+                setStatus(data.status)
+            }
+        })
+        return () => socket.off("order-status-update")
+    }, [])
 
     return (
         <motion.div
@@ -49,10 +62,10 @@ const UserOrderCard = ({ order }: { order: IOrder }) => {
                     </span>
 
                     <span className={`px-3 py-1 text-xs font-semibold border rounded-full ${getStatusColor(
-                        order.status
+                        status
                     )}`}>
 
-                        {order.status}
+                        {status}
 
                     </span>
                 </div>
@@ -123,7 +136,7 @@ const UserOrderCard = ({ order }: { order: IOrder }) => {
                 <div className='border-t pt-3 flex justify-between items-center text-sm font-semibold text-gray-800'>
                     <div className='flex items-center gap-2 text-gray-700 text-sm'>
                         <Truck size={16} className='text-green-600' />
-                        <span>Delivery: <span className='text-green-700 font-bold'>{order.status}</span></span>
+                        <span>Delivery: <span className='text-green-700 font-bold'>{status}</span></span>
                     </div>
                     <div>
                         Total: <span className='text-green-700 font-bold'>₹{order.totalAmount}</span>
