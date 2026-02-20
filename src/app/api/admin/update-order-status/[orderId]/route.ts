@@ -1,5 +1,5 @@
 import connectDb from "@/lib/db";
-import DeliveryAssignment from "@/models/deliveryAssisgnment.model";
+import DeliveryAssignment from "@/models/deliveryAssignment.model";
 import Order from "@/models/order.model";
 import User from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest, { params }: { params: { orderId: st
                 assignedTo: { $in: nearByIds },
                 status: { $nin: ["brodcasted", "completed"] }
             }).distinct("assignedTo")
-            const busyIdSet = new Set(busyIds.map(b => String(b)))
+            const busyIdSet = new Set(busyIds.map((b: string) => String(b)))
             const availableDeliveryBoys = nearByDeliveryBoys.filter(
                 b => !busyIdSet.has(String(b._id))
             )
@@ -53,21 +53,21 @@ export async function POST(req: NextRequest, { params }: { params: { orderId: st
                 )
             }
 
-            const deliveryAssisgnment = await DeliveryAssignment.create({
-                order: order._Id,
+            const deliveryAssignment = await DeliveryAssignment.create({
+                order: order._id,
                 brodcastedTo: candidates,
                 status: "brodcasted"
             })
 
-            order.assignment = deliveryAssisgnment._id,
-                deliveryBoysPayload = availableDeliveryBoys.map(b => ({
-                    id: b._id,
-                    name: b.name,
-                    mobile: b.mobile,
-                    latitude: b.location.coordinates[1],
-                    longitude: b.location.coordinates[0]
-                }))
-            await deliveryAssisgnment.populate("order")
+            order.assignment = deliveryAssignment._id
+            deliveryBoysPayload = availableDeliveryBoys.map(b => ({
+                id: b._id,
+                name: b.name,
+                mobile: b.mobile,
+                latitude: b.location.coordinates[1],
+                longitude: b.location.coordinates[0]
+            }))
+            await deliveryAssignment.populate("order")
         }
 
         await order.save()
