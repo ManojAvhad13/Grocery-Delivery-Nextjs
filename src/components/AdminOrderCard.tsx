@@ -16,10 +16,9 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
     const updateStatus = async (orderId: string, status: string) => {
         try {
             const result = await axios.post(`/api/admin/update-order-status/${orderId}`, { status })
-            console.log(result.data)
             setStatus(status)
-        } catch (error) {
-            console.log(error)
+        } catch (error: any) {
+            alert("Failed to update order status. Please try again.");
         }
     }
 
