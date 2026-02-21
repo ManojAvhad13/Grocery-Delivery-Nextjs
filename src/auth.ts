@@ -16,6 +16,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
             async authorize(credentials) {
 
+                if (!credentials?.email || !credentials?.password) {
+                    throw new Error("Missing credentials")
+                }
+
                 await connectDb()
                 const email = credentials.email
                 const password = credentials.password as string
@@ -71,11 +75,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // user login email password callback
         jwt({ token, user, trigger, session }) {
             if (user) {
-                token.id = user.id.toString(),
-                    token.name = user.name,
-                    token.email = user.email,
-                    token.id = user.id,
-                    token.role = user.role
+                token.id = user.id.toString()
+                token.name = user.name
+                token.email = user.email
+                token.role = user.role
             }
 
             if (trigger == "update") {
@@ -104,7 +107,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
     session: {
         strategy: "jwt",
-        maxAge: 10 * 24 * 60 * 1000
+        maxAge: 10 * 24 * 60 * 60
     },
     secret: process.env.AUTH_SECRET
 })
