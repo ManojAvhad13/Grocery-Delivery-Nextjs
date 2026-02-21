@@ -27,12 +27,12 @@ const RegisterForm = ({ previousStep }: propType) => {
         e.preventDefault()
         setLoading(true)
         try {
-            const result = await axios.post("/api/auth/register", {
+            await axios.post("/api/auth/register", {
                 name, email, password
             })
 
             router.push("/login")
-            console.log(result.data)
+            // console.log(result.data)
             setLoading(false)
         } catch (error) {
             console.log(error)
