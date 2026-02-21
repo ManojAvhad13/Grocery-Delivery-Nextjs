@@ -1,12 +1,51 @@
 'use client'
 
 import { getSocket } from '@/lib/socket'
-import { IOrder } from '@/models/order.model'
-import { Banknote, ChevronDown, ChevronUp, CreditCard, MapPin, Package, Truck } from 'lucide-react'
+import { IUser } from '@/models/user.model'
+import { Banknote, ChevronDown, ChevronUp, CreditCard, MapPin, Package, Truck, UserCheck } from 'lucide-react'
+import mongoose from 'mongoose'
 import { motion } from 'motion/react'
 // import { div } from 'motion/react-client'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+
+export interface IOrder {
+    _id?: mongoose.Types.ObjectId
+    user: mongoose.Types.ObjectId
+    items: [
+        {
+            grocery: mongoose.Types.ObjectId
+            name: string,
+            price: string,
+            unit: string,
+            image: string,
+            quantity: number,
+        }
+    ],
+
+    isPaid: boolean,
+
+    totalAmount: number,
+    paymentMethod: "cod" | "online",
+    address: {
+        fullName: string,
+        mobile: string,
+        city: string,
+        state: string,
+        pincode: string,
+        fullAddress: string,
+        latitude: number,
+        longitude: number,
+    }
+
+    assignment?: mongoose.Types.ObjectId
+    assignedDeliveryBoy?: IUser
+
+    status: "pending" | "out of delivery" | "delivered",
+
+    createdAt?: Date
+    updatedAt?: Date
+}
 
 const UserOrderCard = ({ order }: { order: IOrder }) => {
 
@@ -80,6 +119,41 @@ const UserOrderCard = ({ order }: { order: IOrder }) => {
                     )}
                     {order.paymentMethod == "cod" ? "Cash on Delivery" : "Online Payment"}
                 </div>
+
+                {order.assignedDeliveryBoy && <> <div className="mt-4 bg-blue-50 border border-blue-200 rounded-xl p-4 
+                    flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-gray-700">
+
+                        {/* Left section */}
+                        <div className="flex items-start sm:items-center gap-3">
+                            <UserCheck size={18} className="text-blue-600 shrink-0" />
+
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 font-semibold text-gray-800">
+                                <p className="break-words">
+                                    Assigned to: <span>{order.assignedDeliveryBoy.name}</span>
+                                </p>
+
+                                <p className="text-xs text-gray-600">
+                                    📞 +91 {order.assignedDeliveryBoy.mobile}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Call button */}
+                        <a
+                            href={`tel:${order.assignedDeliveryBoy.mobile}`}
+                            className="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 transition w-fit self-start sm:self-auto"
+                        >
+                            Call
+                        </a>
+                    </div>
+
+                </div>
+                    <button className='w-full flex items-center justify-center gap-2 bg-green-600 text-white font-semibold
+                px-4 py-2 rounded-xl shadow hover:bg-green-700 transition'><Truck size={18} /> Track Your Order</button>
+                </>
+                }
+
 
                 <div className='flex items-center gap-2 text-gray-700 text-sm'>
                     <MapPin size={16} className='text-green-600' />
