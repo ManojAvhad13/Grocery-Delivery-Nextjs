@@ -1,17 +1,56 @@
 'use client'
 
-import { IOrder } from "@/models/order.model"
+import { IUser } from "@/models/user.model"
 import axios from "axios"
-import { CreditCard, MapPin, Package, Phone, User, Banknote, ChevronUp, ChevronDown, Truck } from "lucide-react"
+import { CreditCard, MapPin, Package, Phone, User, Banknote, ChevronUp, ChevronDown, Truck, UserCheck } from "lucide-react"
+import mongoose from "mongoose"
 import { motion } from "motion/react"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+
+export interface IOrder {
+    _id?: mongoose.Types.ObjectId
+    user: mongoose.Types.ObjectId
+    items: [
+        {
+            grocery: mongoose.Types.ObjectId
+            name: string,
+            price: string,
+            unit: string,
+            image: string,
+            quantity: number,
+        }
+    ],
+
+    isPaid: boolean,
+
+    totalAmount: number,
+    paymentMethod: "cod" | "online",
+    address: {
+        fullName: string,
+        mobile: string,
+        city: string,
+        state: string,
+        pincode: string,
+        fullAddress: string,
+        latitude: number,
+        longitude: number,
+    }
+
+    assignment?: mongoose.Types.ObjectId
+    assignedDeliveryBoy?: IUser
+
+    status: "pending" | "out of delivery" | "delivered",
+
+    createdAt?: Date
+    updatedAt?: Date
+}
 
 const AdminOrderCard = ({ order }: { order: IOrder }) => {
 
     const statusOptions = ["pending", "out of delivery"]
     const [expanded, setExpanded] = useState(false)
-    const [status, setStatus] = useState<string>(order.status)
+    const [status, setStatus] = useState<string>("pending")
 
     const updateStatus = async (orderId: string, status: string) => {
         try {
@@ -21,6 +60,10 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
             alert("Failed to update order status. Please try again.");
         }
     }
+
+    useEffect(() => {
+        setStatus(order.status)
+    }, [order])
 
     return (
         <motion.div
@@ -82,6 +125,22 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
                             {order.paymentMethod == "cod" ? "Cash on Delivery" : "Online Payment"}
                         </span>
                     </p>
+
+                    {order.assignedDeliveryBoy && <div className="mt-4 bg-blue-50 border border-blue-200 rounded-xl p-4 
+                    flex items-center justify-between">
+                        <div className="flex items-center gap3 text-sm text-gray-700">
+                            <UserCheck size={18} className="text-blue-600" />
+                            <div className="font-semibold text-gray-800">
+                                <p>Assigned to: <span>{order.assignedDeliveryBoy.name}</span></p>
+                                <p className="text-xs text-gray-600">📞 +91 {order.assignedDeliveryBoy.mobile}</p>
+                            </div>
+                        </div>
+
+                        <a href={`tel:${order.assignedDeliveryBoy.mobile}`} className="bg-blue-600 text-white text-xs px-3 py-1.5 
+                        rounded-lg hover:bg-blue-700 transition">Call</a>
+
+                    </div>}
+
                 </div>
 
                 <div className="flex flex-col items-start md:items-end gap-2">
