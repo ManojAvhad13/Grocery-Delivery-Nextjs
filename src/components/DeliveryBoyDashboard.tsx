@@ -131,8 +131,8 @@ const DeliveryBoyDashboard = () => {
             <div className="max-w-3xl mx-auto">
                 <h2 className="text-2xl font-bold mt-[120px] mb-[30px]">Delivery Assignments</h2>
 
-                {assignments.map(a => (
-                    <div key={a._id} className="p-5 bg-white rounded-xl shadow mb-4 border">
+                {assignments.map((a, index) => (
+                    <div key={index} className="p-5 bg-white rounded-xl shadow mb-4 border">
                         <p><b>Order Id </b>#{a?.order._id.slice(-6) ?? "No order"}</p>
                         <p className="text-gray-600">{a?.order.address?.fullAddress ?? "No address"}</p>
                         <div className="flex gap-3 mt-4">
