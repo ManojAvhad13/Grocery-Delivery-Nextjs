@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic"
 import { useEffect, useState } from "react"
 import "leaflet/dist/leaflet.css"
-import { Polyline, Popup } from "react-leaflet"
+import { Polyline, Popup, useMap } from "react-leaflet"
 
 interface Ilocation {
     latitude: number
@@ -27,6 +27,21 @@ const Marker = dynamic(
     () => import("react-leaflet").then(m => m.Marker),
     { ssr: false }
 )
+
+const Recenter = ({ positions }: { positions: [number, number] }) => {
+
+    const map = useMap()
+
+    useEffect(() => {
+        if (positions[0] != 0 && positions[1] !== 0) {
+            map.setView(positions, map.getZoom(), {
+                animate: true
+            })
+        }
+    }, [])
+
+    return null
+}
 
 const LiveMap = ({ userLocation, deliveryBoyLocation }: Iprops) => {
     const [L, setL] = useState<any>(null)
@@ -60,6 +75,7 @@ const LiveMap = ({ userLocation, deliveryBoyLocation }: Iprops) => {
     return (
         <div className='w-full h-[500px] rounded-xl overflow-hidden shadow relative'>
             <MapContainer center={center} zoom={13} scrollWheelZoom className='w-full h-full'>
+                <Recenter positions={center as any} />
                 <TileLayer
                     attribution='&copy; OpenStreetMap'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
