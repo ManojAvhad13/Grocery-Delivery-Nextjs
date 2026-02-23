@@ -1,11 +1,13 @@
 'use client'
 
+import LiveMap from '@/components/LiveMap'
+import { getSocket } from '@/lib/socket'
 import { IUser } from '@/models/user.model'
 import { RootState } from '@/redux/store'
 import axios from 'axios'
 import { ArrowLeft } from 'lucide-react'
 import mongoose from 'mongoose'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -55,10 +57,11 @@ interface Ilocation {
 const TrackOrder = ({ params }: { params: { orderId: string } }) => {
 
     const { userData } = useSelector((state: RootState) => state.user)
-
     const { orderId } = useParams()
-
     const [order, setOrder] = useState<IOrder>()
+
+    const router = useRouter()
+
     const [userLocation, setUserLocation] = useState<Ilocation>(
         {
             latitude: 0,
@@ -93,16 +96,35 @@ const TrackOrder = ({ params }: { params: { orderId: string } }) => {
         getOrder()
     }, [userData?._id])
 
+    useEffect((): any => {
+        const socket = getSocket()
+        socket.on("update-deliverBoy-location", (data) => {
+            setDeliveryBoyLocation({
+                latitude: data.location.coordinates?.[1] ?? data.location.latitude,
+                longitude: data.location.coordinates?.[1] ?? data.location.longitude
+            })
+        })
+        return () => socket.off("update-deliverBoy-location")
+    }, [order])
+
     return (
         <div className='w-full min-h-screen bg-linear-to-b from-green-50 to-white'>
             <div className='max-w-2xl mx-auto pb-24'>
-                <div>
-                    <button><ArrowLeft /></button>
+                <div className='sticky top-0 bg-white/80 backdrop-blur-xl p-4 border-b shadow flex gap-3 items-center z-999'>
+                    <button className='p-2 bg-green-100 rounded-full' onClick={() => router.back()}><ArrowLeft size={20} className='text-green-700' /></button>
                     <div>
-                        <h2>Track Order</h2>
-                        <p>order #{order?._id?.toString().slice(-6)}</p>
+                        <h2 className='text-xl font-bold'>Track Order</h2>
+                        <p className='text-sm text-gray-600'>order #{order?._id?.toString().slice(-6)}
+                            <span className='text-green-700 font-semibold'>{order?.status}</span></p>
                     </div>
                 </div>
+
+                <div className='px-4 mt-6'>
+                    <div className='rounded-3xl overflow-hidden border shadow'>
+                        <LiveMap userLocation={userLocation} deliveryBoyLocation={deliveryBoyLocation} />
+                    </div>
+                </div>
+
             </div>
         </div>
     )
