@@ -1,5 +1,6 @@
 'use client'
 
+import { getSocket } from "@/lib/socket"
 import { IUser } from "@/models/user.model"
 import axios from "axios"
 import { CreditCard, MapPin, Package, Phone, User, Banknote, ChevronUp, ChevronDown, Truck, UserCheck } from "lucide-react"
@@ -64,6 +65,16 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
     useEffect(() => {
         setStatus(order.status)
     }, [order])
+
+    useEffect((): any => {
+        const socket = getSocket()
+        socket.on("order-status-update", (data) => {
+            if (data.orderId.toString() == order._id!.toString()) {
+                setStatus(data.status)
+            }
+        })
+        return () => socket.off("order-status-update")
+    }, [])
 
     return (
         <motion.div
