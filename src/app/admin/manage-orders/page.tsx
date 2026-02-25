@@ -65,14 +65,23 @@ const ManageOrders = () => {
         getOrders()
     }, [])
 
-    useEffect((): any => {
+    useEffect(() => {
         const socket = getSocket()
         socket.on("new-order", (newOrder) => {
             // console.log(newOrder)
             setOrders((prev) => [newOrder, ...prev!])
         })
 
-        return () => socket.off("new-order")
+        socket.on("order-assigned", ({ orderId, assignedDeliveryBoy }) => {
+            setOrders((prev) => prev?.map((o) => (
+                o._id == orderId ? { ...o, assignedDeliveryBoy } : o
+            )))
+        })
+
+        return () => {
+            socket.off("new-order")
+            socket.off("order-assigned")
+        }
     }, [])
 
     return (
