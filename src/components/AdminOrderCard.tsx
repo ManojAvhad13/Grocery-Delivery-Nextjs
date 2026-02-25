@@ -83,35 +83,18 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
                         Order #{order._id?.toString().slice(-6)}
                     </p>
 
-                    <span className={`inline-block text-xs font-semibold px-3 py-1 rounded-full border
+                    {status != "delivered" && <span className={`inline-block text-xs font-semibold px-3 py-1 rounded-full border
                         ${order.isPaid
                             ? "bg-green-100 text-green-700 border-green-300"
                             : "bg-red-100 text-red-700 border-red-300"
                         }`}>
                         {order.isPaid ? "Paid" : "Unpaid"}
-                    </span>
+                    </span>}
 
                     <p className="text-gray-500 text-sm">
                         {new Date(order.createdAt!).toLocaleString()}
                     </p>
 
-                    <div className="mt-3 space-y-1 text-gray-700 text-sm">
-                        <p className="flex items-center gap-2 font-semibold">
-                            <User size={16} className="text-green-600" />
-                            <span>{order?.address.fullName}</span>
-                        </p>
-
-                        <p className="flex items-center gap-2 font-semibold">
-                            <Phone size={16} className="text-green-600" />
-                            <span>{order?.address.mobile}</span>
-                        </p>
-
-                        <p className="flex items-center gap-2 font-semibold">
-                            <MapPin size={16} className="text-green-600" />
-                            <span>{order?.address.fullAddress}</span>
-                        </p>
-
-                    </div>
                     <p className="mt-3 flex items-center gap-2 text-sm text-gray-700">
                         {/* <CreditCard size={16} className="text-green-600" />
                             <span>{order.paymentMethod === "cod" ? "Cash on Delivery" : "Online Payment"}</span> */}
@@ -154,7 +137,7 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
                         }`}>
                         {status}
                     </span>
-                    <select className="border border-gray-300 rounded-lg px-3 py-1 text-sm shadow-sm hover:border-green-400 transition
+                    {status != "delivered" && <select className="border border-gray-300 rounded-lg px-3 py-1 text-sm shadow-sm hover:border-green-400 transition
                     focus:ring-2 focus:ring-green-500 outline-none"
                         value={status}
                         onChange={(e) => updateStatus(order._id?.toString()!, e.target.value)}
@@ -162,7 +145,7 @@ const AdminOrderCard = ({ order }: { order: IOrder }) => {
                         {statusOptions.map(st => (
                             <option key={st} value={st}>{st.toUpperCase()}</option>
                         ))}
-                    </select>
+                    </select>}
                 </div>
             </div>
 
