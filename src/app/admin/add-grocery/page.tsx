@@ -160,8 +160,8 @@ const AddGrocery = () => {
                                 onChange={(e) => setCategory(e.target.value)}
                             >
                                 <option value="">Select Category</option>
-                                {categories.map(cat => (
-                                    <option key={cat} value={cat}>{cat}</option>
+                                {categories.map((cat, i) => (
+                                    <option key={i} value={cat}>{cat}</option>
                                 ))}
                             </select>
                         </div>
