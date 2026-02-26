@@ -1,0 +1,101 @@
+'use client'
+
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import { AnimatePresence, motion, scale } from "motion/react"
+import { ArrowLeft, Edit, Package, Search } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { IGrocery } from '@/models/grocery.model'
+import Image from 'next/image'
+
+const ViewGrocery = () => {
+
+    const router = useRouter()
+    const [groceries, setGroceries] = useState<IGrocery[]>()
+    const [editing, setEditing] = useState<IGrocery | null>(null)
+
+    useEffect(() => {
+        const getGroceries = async () => {
+            try {
+                const result = await axios.get("/api/admin/get-groceries")
+                setGroceries(result.data)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        getGroceries()
+    }, [])
+
+    return (
+        <div className='pt-4 w-[95%] md:w-[85%] mx-auto pb-20'>
+            <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4 }}
+                className='flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 text-center sm:text-left'
+            >
+                <button onClick={() => router.push("/")}
+                    className='flex items-center justify-center gap-2 bg-green-100 hover:bg-green-200 text-green-700 font-semibold
+                    px-4 py-2 rounded-full transition w-full sm:w-auto'
+                ><ArrowLeft size={18} /><span>Back</span></button>
+                <h1 className='text-2xl md:text-3xl font-extrabold text-green-700 flex items-center 
+                justify-center gap-2'><Package size={28} className='text-green-600' /> Manage Groceries</h1>
+            </motion.div>
+
+            <motion.form
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+
+                className='flex items-center bg-white border border-gray-200 rounded-full px-5 py-3 shadow-sm
+            mb-10 hover:shadow-lg transition-all mx-auto w-full'
+            >
+                <Search className='text-gray-500 w-5 h-5' />
+                <input type="text" className='w-full outline-none text-gray-700 placeholder-gray-400'
+                    placeholder='Search by name or category...' />
+            </motion.form>
+
+            <div className='space-y-4'>
+                {groceries?.map((g, i) => (
+                    <motion.div
+                        key={i}
+                        whileHover={{ scale: 1.01 }}
+                        transition={{ type: "spring", stiffness: 100 }}
+
+                        className='bg-white rounded-2xl shadow-md hover:shadow-xl border border-gray-100 flex flex-col
+                        sm:flex-row items-center sm:items-start gap-5 p-5 transition-all'
+                    >
+
+                        <div className='relative w-full sm:w-44 aspect-square rounded-xl overflow-hidden border border-gray-200'>
+                            <Image src={g.image} alt={g.name} fill className='object-cover hover:scale-110 
+                            transition-transform duration-500' />
+                        </div>
+
+                        <div className='flex-1 flex flex-col justify-between w-full'>
+                            <div>
+                                <h3 className='font-semibold text-gray-800 text-lg truncate'>{g.name}</h3>
+                                <p className='text-gray-500 text-sm capitalize'>{g.category}</p>
+                            </div>
+                            <div className='mt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2'>
+                                <p className='text-green-700 font-bold text-lg'>₹{g.price} / <span className='text-gray-500 text-sm font-medium ml-1'>{g.unit}</span></p>
+                                <button className='bg-green-600 text-white px-4 py-2 rounded-lg font-semibold flex items-center justify-center gap-2
+                                hover:bg-green-700 transition-all'
+                                    onClick={() => setEditing(g)}>
+                                    <Edit size={15} /> Edit
+                                </button>
+                            </div>
+                        </div>
+
+                    </motion.div>
+                ))}
+            </div>
+
+            <AnimatePresence>
+
+            </AnimatePresence>
+
+        </div>
+    )
+}
+
+export default ViewGrocery
