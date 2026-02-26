@@ -7,7 +7,6 @@ import { ChangeEvent, FormEvent, useState } from 'react'
 import Image from 'next/image'
 import axios from 'axios'
 
-// Fixed typos in category names
 const categories = [
     "Fruits & Vegetables",
     "Dairy & Eggs",
