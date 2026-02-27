@@ -1,13 +1,12 @@
 import connectDb from '@/lib/db'
 import CategorySlider from './CategorySlider'
 import HeroSection from './HeroSection'
-import Grocery from '@/models/grocery.model'
+import Grocery, { IGrocery } from '@/models/grocery.model'
 import GroceryItemCard from './GroceryItemCard'
 
-async function UserDashboard() {
+async function UserDashboard({ groceryList }: { groceryList: IGrocery[] }) {
     await connectDb()
-    const groceries = await Grocery.find({})
-    const plainGrocery = JSON.parse(JSON.stringify(groceries))
+    const plainGrocery = JSON.parse(JSON.stringify(groceryList))
 
     return (
         <>
