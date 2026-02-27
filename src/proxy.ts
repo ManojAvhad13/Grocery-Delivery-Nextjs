@@ -1,9 +1,9 @@
 // This is middleware file...new update in nextjs middleware name change "proxy" in version 16 
 // but functionality remail same.
 
-import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
+import { auth } from "./auth";
 
 export async function proxy(req: NextRequest) {
 
@@ -13,18 +13,16 @@ export async function proxy(req: NextRequest) {
         return NextResponse.next()
     }
 
-    const token = await getToken({ req, secret: process.env.AUTH_SECRET })
-    // console.log(token)
-    // console.log(req.url)
+    const session = await auth()
 
-    if (!token) {
+    if (!session) {
         const loginUrl = new URL("/login", req.url)
         // console.log(loginUrl)
         loginUrl.searchParams.set("callbackUrl", req.url)
         return NextResponse.redirect(loginUrl)
     }
 
-    const role = token.role
+    const role = session.user?.role
     if (pathname.startsWith("/user") && role !== "user") {
         return NextResponse.redirect(new URL("/unauthorized", req.url))
     }

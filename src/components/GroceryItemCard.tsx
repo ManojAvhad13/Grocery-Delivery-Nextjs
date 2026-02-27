@@ -3,13 +3,12 @@
 import { AppDispatch, RootState } from '@/redux/store'
 import { addToCart, decreaseQuantity, increaseQuantity } from '@/redux/cartSlice'   // FIXED IMPORT
 import { Minus, Plus, ShoppingCart } from 'lucide-react'
-import mongoose from 'mongoose'
 import { motion } from 'motion/react'
 import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
 
 interface IGrocery {
-    _id: mongoose.Types.ObjectId,
+    _id: string
     name: string,
     category: string,
     price: string,
@@ -24,7 +23,7 @@ const GroceryItemCard = ({ item }: { item: IGrocery }) => {
     const dispatch = useDispatch<AppDispatch>()
 
     const { cartData } = useSelector((state: RootState) => state.cart)
-    const cartItem = cartData.find(i => i._id == item._id)
+    const cartItem = cartData.find(i => i._id.toString() == item._id)
 
     return (
         <motion.div

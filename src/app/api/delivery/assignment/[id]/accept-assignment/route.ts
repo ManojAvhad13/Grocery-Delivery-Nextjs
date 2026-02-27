@@ -6,10 +6,10 @@ import Order from "@/models/order.model";
 import { NextRequest, NextResponse } from "next/server";
 
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, context: { params: Promise<{ id: string; }>; }) {
     try {
         await connectDb()
-        const { id } = await params
+        const { id } = await context.params
         const session = await auth()
         const deliveryBoyId = session?.user?.id
 
