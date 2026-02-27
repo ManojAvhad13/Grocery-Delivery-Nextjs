@@ -69,8 +69,10 @@ const RegisterForm = ({ previousStep }: propType) => {
             </motion.h1>
 
             <p className="text-gray-600 mb-6 flex items-center justify-center text-center md:justify-start md:text-left gap-2 z-10">
-                Join Grocery app and enjoy fresh groceries delivered fast
-                <Leaf className="inline w-5 h-5 text-green-600 ml-1" />
+                <span>
+                    Join Grocery app and enjoy fresh groceries delivered fast
+                    <Leaf className="inline w-5 h-5 text-green-600 ml-1" />
+                </span>
             </p>
 
             {/* glass form */}
