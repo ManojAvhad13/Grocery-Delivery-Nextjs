@@ -25,7 +25,7 @@ const Footer = () => {
 
                 {/* Brand */}
                 <div>
-                    <h2 className="text-2xl font-bold mb-3">Grocery Delivery</h2>
+                    <h2 className="text-2xl font-bold mb-3">GroceryCart Delivery</h2>
                     <p className="text-sm text-green-100 leading-relaxed">
                         Your one-stop online grocery store delivering freshness to your doorstep.
                     </p>
