@@ -3,6 +3,7 @@ import "./globals.css";
 import Provider from "@/Provider";
 import StoreProvider from "@/redux/StoreProvider";
 import InitUser from "@/InitUser";
+import { Toaster } from "react-hot-toast"
 
 export const metadata: Metadata = {
   title: "Grocery | 10 minutes grocery delivery",
@@ -21,6 +22,17 @@ export default function RootLayout({
           <StoreProvider>
             <InitUser />
             {children}
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                style: {
+                  borderRadius: "12px",
+                  background: "#fff",
+                  color: "#333",
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.1)"
+                }
+              }}
+            />
           </StoreProvider>
         </Provider>
       </body>
