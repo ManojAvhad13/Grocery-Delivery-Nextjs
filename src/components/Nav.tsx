@@ -7,7 +7,8 @@ import { AnimatePresence, motion } from 'motion/react'
 import { signOut } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { FormEvent, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useSelector } from 'react-redux'
 
@@ -29,6 +30,8 @@ const Nav = ({ user }: { user: IUser }) => {
     const [searchBarOpen, setSearchBarOpen] = useState(false)
     const [menuOpen, setMenuOpen] = useState(false)
     const { cartData } = useSelector((state: RootState) => state.cart)
+    const [search, setSearch] = useState("")
+    const router = useRouter()
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
@@ -39,6 +42,19 @@ const Nav = ({ user }: { user: IUser }) => {
         document.addEventListener("mousedown", handleClickOutside)
         return () => document.removeEventListener("mousedown", handleClickOutside)
     }, [])
+
+    const handleSearch = (e: FormEvent) => {
+        e.preventDefault()
+        const query = search.trim()
+        if (!query) {
+            return router.push("/")
+        }
+
+        router.push(`/?q=${encodeURIComponent(query)}`)
+        setSearch("")
+        setSearchBarOpen(false)
+
+    }
 
     const sideBar = menuOpen ? createPortal(
         <AnimatePresence>
@@ -107,10 +123,14 @@ border border-green-400/60 shadow-lg">
                 GroceryCart
             </Link>
 
-            {user.role == "user" && <form className='hidden md:flex items-center bg-white rounded-full px-4 py-2 w-1/2 max-w-lg shadow-md'>
+            {user.role == "user" && <form className='hidden md:flex items-center bg-white rounded-full px-4 py-2 w-1/2 max-w-lg shadow-md'
+                onSubmit={handleSearch}>
                 <Search className='text-gray-500 w-5 h-5 mr-2' />
 
-                <input type="text" placeholder='Search groceries...' className='w-full outline-none text-gray-700 placeholder-gray-400' />
+                <input type="text" placeholder='Search groceries...' className='w-full outline-none text-gray-700 placeholder-gray-400'
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
             </form>}
 
             <div className='flex items-center gap-3 md:gap-6 relative'>
@@ -194,8 +214,11 @@ border border-green-400/60 shadow-lg">
                                 className='fixed top-24 left-5 -translate-x-1/2 w-[90%] bg-white rounded-full shadow-lg z-40 flex items-center px-4 py-2'
                             >
                                 <Search className='text-gray-500 w-5 h-5 mr-2' />
-                                <form className='grow w-full'>
-                                    <input type="text" className='w-full outline-none text-gray-700' placeholder='Search groceries...' />
+                                <form className='grow w-full' onSubmit={handleSearch}>
+                                    <input type="text" className='w-full outline-none text-gray-700' placeholder='Search groceries...'
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                    />
                                 </form>
                                 <button onClick={() => setSearchBarOpen(false)}>
                                     <X className='text-gray-500 w-5 h-5' />
